@@ -1,0 +1,30 @@
+name: Monitoramento de Logs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'  # Executa a cada 15 minutos
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositório
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt || echo "Sem dependências extras"
+
+      - name: Executar script de monitoramento
+        run: python monitor_logs.py
+
+      - name: Salvar artefato
+        uses: actions/upload-artifact@v3
+        with:
+          name: logs_csv
+          path: eventos_seguranca.csv
